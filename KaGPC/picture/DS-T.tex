@@ -1,0 +1,60 @@
+% Preamble: \pgfplotsset{width=7cm,compat=1.11}
+\documentclass[a4paper]{article}
+% for dvipdfm:
+%\def\pgfsysdriver{pgfsys-dvipdfm.def}
+\usepackage{pgfplots}
+
+\begin{document}
+\begin{tikzpicture}
+\pgfplotsset{every axis legend/.append style={
+at={(0.5,1.1)},
+anchor=south,
+line width=1.5pt,
+tick style={line width=1.5pt}}},
+%font=\large,
+
+\begin{axis} [cycle list={%
+{blue,mark=triangle},
+{red,mark=square},
+{brown!60!black,
+mark options={fill=brown!40},
+mark=otimes*},
+},
+line width=1.5pt,
+legend columns=3,
+xlabel=$DS(10^5)$,
+ylabel=$URZA\_T(msec)$,
+ymax=88000,
+xtick={0.1,1,3,5,7,9,13}
+]
+\addplot coordinates {
+(0.1,4.333)
+(1,417.333)
+(3,4938.333)
+(5,12523.667)
+(7,22668)
+(9,35872.667)
+};
+
+\addplot coordinates{
+(0.1,5)
+(1,421.333)
+(3,3947)
+(5,11045.333)
+(7,21844)
+(9,36310)
+};
+
+\addplot coordinates{
+(0.1,22)
+(1,526)
+(3,4618.333)
+(5,12810)
+(7,24785.333)
+(9,87693.66667)
+};
+
+\legend{$MaxMargin$,$CubeTree$,$MergeList$}
+\end{axis}
+\end{tikzpicture}
+\end{document}

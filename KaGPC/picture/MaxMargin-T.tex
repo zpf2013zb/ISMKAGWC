@@ -1,0 +1,59 @@
+% Preamble: \pgfplotsset{width=7cm,compat=1.11}
+\documentclass[a4paper]{article}
+% for dvipdfm:
+%\def\pgfsysdriver{pgfsys-dvipdfm.def}
+\usepackage{pgfplots}
+
+\begin{document}
+\begin{tikzpicture}
+\pgfplotsset{every axis legend/.append style={
+at={(0.5,1.03)},
+line width=1.5pt,
+tick style={line width=1.5pt},
+anchor=south}}
+\begin{axis} [cycle list={%
+{blue,mark=triangle},
+{red,mark=square},
+{brown!60!black,
+mark options={fill=brown!40},
+mark=otimes*},
+},
+line width=1.5pt,
+legend columns=3,
+xlabel=$MaxMargin-KD$,
+ylabel=$URZA\_T(msec)$
+]
+\addplot coordinates {
+(3,353)
+(5,402)
+(7,432)
+(9,457)
+(11,446)
+(13,461)
+(15,464)
+};
+
+\addplot coordinates{
+(3,360)
+(5,385)
+(7,400)
+(9,432)
+(11,454)
+(13,459)
+(15,467)
+};
+
+\addplot coordinates{
+(3,330)
+(5,337)
+(7,369)
+(9,421)
+(11,419)
+(13,434)
+(15,450)
+};
+
+\legend{$Uniform$,$Random$,$Zipf$}
+\end{axis}
+\end{tikzpicture}
+\end{document}

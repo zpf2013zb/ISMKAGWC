@@ -1,0 +1,106 @@
+\documentclass[3p]{elsarticle}
+
+\usepackage{graphicx}
+\usepackage{balance}  % for  \balance command ON LAST PAGE  (only there!)
+\usepackage{accents}
+\usepackage{subfigure}
+%\usepackage{tabularx}
+%\usepackage{flafter}
+%used to control the table
+%\usepackage{multirow}
+
+%used to adjust the space of item
+\usepackage{enumitem}
+\usepackage[ruled,vlined,boxed,linesnumbered,commentsnumbered]{algorithm2e}
+\usepackage{lineno,hyperref}
+\modulolinenumbers[5]
+
+
+\setenumerate[1]{itemsep=0pt,partopsep=0pt,parsep=\parskip,topsep=5pt}
+\setitemize[1]{itemsep=0pt,partopsep=0pt,parsep=\parskip,topsep=5pt}
+\setdescription{itemsep=0pt,partopsep=0pt,parsep=\parskip,topsep=5pt}
+
+%used to add item
+%\renewcommand{\labelitemii}{$\bullet$}
+%\newtheorem{thm}{Theorem}
+%\newtheorem{lem}{Lemma}
+%\newdefinition{definition}{Definition}
+%\newproof{pot}{Proof}
+\renewcommand{\labelitemii}{$\bullet$}
+\newtheorem{thm}{Theorem}
+\newtheorem{lem}{Lemma}
+\newdefinition{definition}{Definition}
+\newproof{pot}{Proof}
+\journal{Journal of \LaTeX\ Templates}
+
+
+\begin{document}
+% ****************** TITLE ****************************************
+\begin{frontmatter}
+\title{Collective Spatial Keyword Queries with Weight Coverage}
+
+
+%\numberofauthors{3} %  in this sample file, there are a *total*
+% of EIGHT authors. SIX appear on the 'first-page' (for formatting
+% reasons) and the remaining two appear in the \additionalauthors section.
+\author{Pengfei Zhang\corref{cor1}}
+%\address{Zhejiang University, China}
+\ead{zpf\_2013zb@zju.edu.cn}
+
+\author{Huaizhong Lin}
+%\address[rvt]{Zhejiang University, China}
+\ead{linhz@zju.edu.cn}
+
+\author{Dongming Lu}
+%\address{Zhejiang University, China}
+\ead{ldm@zju.edu.cn}
+
+\cortext[cor1]{Corresponding author.}
+\fntext[f1]{This manuscript is the authors¡¯ original work and has not been published nor has it been submitted simultaneously elsewhere.}
+\fntext[f2]{ All authors have checked the manuscript and have agreed to the submission. }
+
+
+\address{Department of Computer Science, Zhejiang University, China}
+%\linenumbers
+
+\begin{abstract}
+Spatial keyword queries have received significant attention recently since the proliferation of geo-textual data. Given a location and a set of query keywords, collective spatial keyword query (CoSKQ) returns a group of objects, which collectively cover the given query keywords and have the smallest cost. However, CoSKQ only retrieves objects that can cover query keywords, without taking the level information (e.g., the level of attraction), which is crucial for users to make decisions, of keyword into consideration.
+
+To tackle the spatial keyword query with level information of keyword, keyword-aware group weight coverage query (KaGWC) is proposed in this work. KaGWC retrieves a group G of objects that collectively meet users' needs: 1) the weight that each query keyword covered by G not less than a given threshold; 2) the cost function is minimized. We map KaGWC query to the classic Weighted Set Cover (WSC) problem, denoting that it is NP-hard. With the KHT index, we design two approximation algorithms with provable approximation ratio and an exact algorithm. A comprehensive empirical evaluation over real and synthetic datasets demonstrates the efficiency and effectiveness of our proposed algorithms.
+\end{abstract}
+
+\begin{keyword}
+Spatial database \sep collective spatial keyword query \sep level information \sep weight coverage
+\end{keyword}
+
+\end{frontmatter}
+
+\section{Introduction}
+\input{INTRODUCTION}
+
+\section{Problem Statement}
+\input{PROBLEM_STATEMENT}
+
+\section{Related Work}
+\input{RELATED_WORK}
+
+\section{KHT Index}
+\input{PRE-PROCESSING}
+
+\section{Algorithms}
+\input{ALGORITHM}
+
+\section{Empirical Study}
+\input{EMPIRICAL_STUDY}
+
+
+\section{Conclusions and Future Work}
+\input{CONCLUSIONS_AND_FUTURE_WORK}
+
+\textbf{Acknowledgements:} This work was supported in part by the National Key Technology Support Program Grants 2012BAH03F02 and 2013BAH62F01, NSFC Grant 61379033, the Fundamental Research Funds for the Central Universities under Grant 2013QNA5020, Zhejiang Province Funds for Science and Technology Innovation Team Grant 2010R50040, and the Key Project of Zhejiang University Excellent Young Teacher Fund (Zijin Plan).
+
+%\section{REFERENCES}
+%\input{REFERENCES}
+\bibliographystyle{abbrv}
+\bibliography{kwd}
+\end{document}

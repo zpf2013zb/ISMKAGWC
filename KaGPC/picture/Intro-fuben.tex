@@ -1,0 +1,101 @@
+%introduction
+With the development of information technology (e.g., GIS), as well as increasing popularity of services such as Google Earth and Baidu Lvyou, large volumes of spatial data (e.g., tourist attractions, hotels and restaurants) are becoming available. Recently, increasing focus is being given to geo-textual information in response to users' queries, which facilitates the relevant researches on spatial keyword queries \cite{cong2012efficient, de2008keyword, wu2012joint, zhang2009keyword}, which take both of the locations and textual descriptions of content into consideration. A typical spatial keyword query takes a location and a set of keywords as arguments and returns the single spatial object that best matches these arguments.
+\begin{table}
+\centering
+\begin{tabular}{|l|l|l|l|}
+%\caption{$MergeList$}
+\hline
+OID & $PX$ & $PY$ & $Associated \quad keywords$ \\
+%OID & Position_x & Position_y & Associated keywords \\
+\hline \hline
+$o_1$ & 159.0 & 246.0 & mountain 4,landscape 1,temple 5 \\
+\hline
+$o_2$ & 171.0 & 36.0 & shore 2,museum 1 \\
+\hline
+$o_3$ & 109.5 & 235.5 & forest 4,mountain 1,temple 2 \\
+\hline
+$o_4$ & 352.5 & 271.5 & shore 1 \\
+\hline
+$o_5$ & 97.5 & 276.0 & driftage 1,shore 5,architecture 1 \\
+\hline
+$o_6$ & 331.5 & 70.5 & architecture 5,temple 2 \\
+\hline
+$o_7$ & 259.5 & 177.0 & museum 3,mountain 1,landscape 4 \\
+\hline
+$o_8$ & 130.5 & 3.0 & glacier 1 \\
+\hline
+$o_9$ & 148.5 & 291.0 & forest 4 \\
+\hline
+$o_{10}$ & 204.0 & 58.5 & driftage 3,mountain 1,glacier 1 \\
+\hline
+\end{tabular}
+\caption{Spatial objects database}\label{T1}
+\end{table}
+
+In a wide spectrum of applications, however, the users' needs (expressed by keywords) cannot be satisfied with only one single object. Hence, the CoSKQ \cite{cao2011collective, long2013collective} is proposed, and satisfies users' needs collectively by retrieving a group of objects. Unfortunately, all of these existing works regardless of the level information of keywords, which is critical for users to make decision. For instance, Table \ref{T1} shows a spatial object database. There is an integer value associated with each keyword to denote the corresponding level of attraction. For users who prefer to famous mountain may choose $o_1$, others may prefer to choose $o_3$, $o_7$ or $o_{10}$ due to the reason of cost or just for taking exercise. In this scenario, users prefer to find objects that best match the personal preferences with level information of keywords, instead of retrieving objects only to cover the query keywords. To address this problem, we introduce the notion of \textbf{weight vector} to capture the weight that query user assigns for each level. Without loss of generality, we hypothesize that the sum of each dimension of wv equals to 1. We aim at retrieving a group G of objects, and for each query keyword, the weight sum for it can meet given threshold. By adjusting this threshold, users can control the size of result set flexibly and obtain the feasible succedaneous choice as the supplement. In addition, this query can also be used to find a consortium of partners that combine to offer the required capabilities for a given project. To accomplish a project, various kinds of capabilities are required, such as coding, information retrieval, text editing etc. Each partner may possess part of these capabilities, and we can utilize the integer value to denote the level of this ability. With the weight vector to capture the completion ratio for the partners with different level in a limited lifespan. In this situation, the leader may want to retrieve a consortium of partners that for each subtask e.g., coding, the total completion ratio not less than a threshold within a limited lifespan.
+
+To address this problem, we propose a novel query called KaGPC in our work. We study the KaGPC in 2D Euclidean space. Similar with CoSKQ, the KaGPC query retrieves a group of objects with the minimal cost to cover the query keywords. Significantly, there are several major differences distinguish them. First, we attach the keyword with the level information to distinguish them, which is critical for users to make decision. In contrast, CoSKQ do not take this information into consideration. Second, in our work, we apply weight vector to measure the users' preference for each level and propose weight constraint. Third, we take cost distance as our cost function, not the maximum sum cost used in CoSKQ \cite{cao2011collective}. Given these differences, we cannot extend the methods of CoSKQ to tackle our problem.
+
+Specifically, given a set of spatial objects O, and a query $q=(\ell,\theta,V,\omega)$, where $\ell$ is a spatial location and $\theta$ is a weight threshold. V is a weight vector. $\omega$ represents the query keywords. KaGPC query retrieves a group G of objects that meet the following two conditions:
+\begin{itemize}
+    \item For each query keyword, the weight sum of G is not less than $\theta$;
+    \item The cost distance of G is minimized.
+\end{itemize}
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+\multicolumn{4}{|c|} {An example of $KaGPC$ query} \\
+\hline
+$q.\ell$ & $q.\theta$ & $q.P$ & $q.\omega$ \\
+\hline
+(31.5,50.0) & 0.4 & (0.1,0.3,0.2,0.3,0.1) & mountain,temple \\
+\hline
+\end{tabular}
+
+\begin{tabular}{|c|l|c|c|}
+
+%\caption{$MergeList$}
+\hline
+
+SID & Solutions & Coverage Probability & WD\_cost \\
+%OID & Position_x & Position_y & Associated keywords \\
+\hline
+$S_1$ & $o_1,o_3$ & 0.4, 0.4 & 3746.83 \\
+\hline
+$S_2$ & $o_1,o_3,o_6$ & 0.4, 0.7 & 5851.73 \\
+\hline
+$S_3$ & $o_1,o_3,o_7$ & 0.5, 0.4 & 5834.71 \\
+\hline
+$S_4$ & $o_1,o_3,o_{10}$ & 0.5, 0.4 & 4610.38 \\
+\hline
+$S_5$ & $o_1,o_6,o_7$ & 0.4, 0.4 & 6530.98 \\
+\hline
+$S_6$ & $o_1,o_6,o_{10}$ & 0.4, 0.4 & 5306.65 \\
+\hline
+$S_7$ & $o_1,o_3,o_6,o_7$ & 0.5, 0.7 & 7939.61 \\
+\hline
+$S_8$ & $o_1,o_3,o_6,o_{10}$ & 0.5, 0.7 & 6715.28 \\
+\hline
+$S_9$ & $o_1,o_3,o_7,o_{10}$ & 0.6, 0.4 & 6698.26 \\
+\hline
+$S_{10}$ & $o_1,o_6,o_7,o_{10}$ & 0.5, 0.4 & 7394.53 \\
+\hline
+$S_{11}$ & $o_1,o_3,o_6,o_7,o_{10}$ & 0.6, 0.7 & 8803.15 \\
+\hline
+\end{tabular}
+\caption{An example of $KaGPC$ query}\label{T2}
+\end{table}
+EXAMPLE 1: We illustrate an example of KaGPC query at the top of Table \ref{T2} with the objects presented in Table \ref{T1}. We obtain all of the feasible solutions (e.g., $S_1$ to $S_{11}$). Even though all of these solutions satisfy the weight constraint, we take $S_1$ the one with the minimum cost distance as our optimal solution.
+
+In this paper, we map the classic WSC to KaGPC, which denotes that KaGPC query is NP-hard. Due to the intrinsical challenges of NP-hard problem, we design two approximation algorithms with provable approximation ratio. Considering the scale of query keywords is limited, we also provide an exact algorithm in our work.
+
+To summarize, we make the following contributions in this paper.
+\begin{itemize}
+    \item We introduce the weight vector and propose a novel type of queries, called KaGPC queries, retrieving a group of objects that cover the query keywords not less than a given threshold. We prove this problem is NP-hard. To the best of our knowledge, this is the first work to address this problem.
+    \item We design two effective approximation algorithms based on the KHT index. Besides, we also propose an exact algorithm for this problem.
+    \item We conduct comprehensive experiments to demonstrate the effectiveness of our proposed algorithms.
+\end{itemize}
+
+The rest of this paper is organized as follows. Section 2 formally defines the novel query and proves the NP-hard complexity of it. Section 3 presents how to construct the KHT index. Section 4 depicts two approximation algorithms and the exact algorithm. We show our experiment results in Section 5, and introduce related work in Section 6. Finally, We conclude our work in Section 7.

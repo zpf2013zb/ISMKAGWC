@@ -1,0 +1,59 @@
+% Preamble: \pgfplotsset{width=7cm,compat=1.11}
+\documentclass[a4paper]{article}
+% for dvipdfm:
+%\def\pgfsysdriver{pgfsys-dvipdfm.def}
+\usepackage{pgfplots}
+
+\begin{document}
+\begin{tikzpicture}
+\pgfplotsset{every axis legend/.append style={
+at={(0.5,1.03)},
+line width=1.5pt,
+tick style={line width=1.5pt},
+anchor=south}}
+\begin{axis} [cycle list={%
+{blue,mark=triangle},
+{red,mark=square},
+{brown!60!black,
+mark options={fill=brown!40},
+mark=otimes*},
+},
+line width=1.5pt,
+legend columns=3,
+xlabel=$CubeTree-KD$,
+ylabel=$URZA\_T(msec)$
+]
+\addplot coordinates {
+(3,341)
+(5,394)
+(7,434)
+(9,448)
+(11,457)
+(13,466)
+(15,468)
+};
+
+\addplot coordinates{
+(3,351)
+(5,384)
+(7,405)
+(9,439)
+(11,448)
+(13,454)
+(15,470)
+};
+
+\addplot coordinates{
+(3,305)
+(5,334)
+(7,364)
+(9,402)
+(11,415)
+(13,438)
+(15,447)
+};
+
+\legend{$Uniform$,$Random$,$Zipf$}
+\end{axis}
+\end{tikzpicture}
+\end{document}

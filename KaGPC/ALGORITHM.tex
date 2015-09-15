@@ -1,0 +1,493 @@
+%ALGORITHM
+Considering the inherent complexity of NP-hard problem, we design two approximation algorithms, namely CubeTree and MaxMargin with provable approximation ratio in Sections 5.1 and 5.2 respectively. Besides, we also propose the exact algorithm MergeList in Section 5.3.
+
+\subsection{Approximation Algorithm CubeTree}
+Similar to the divide and conquer strategy, CubeTree obtains the final solution by combining solutions of the sub-queries in a bottom-up manner. Before delving more into CubeTree algorithm, we introduce the notion of \textit{keywords cube} which will lay the foundation for the CubeTree algorithm.
+\begin{definition}
+    \textbf{(keywords cube).} Given a query q, a set of keywords $\kappa \subseteq q.\omega$ and $\kappa \neq {\O}$. We define the keywords cube $Cube_\kappa$ as a subset of $RO_\kappa$, which is in the descending order of $cr(o,q)$ and satisfies the following three conditions:
+    \begin{itemize}
+        \item For each keyword $\lambda \in \kappa$, $cov(Cube_\kappa,\lambda) \geq q.\theta$;
+        \item For any $o_i \in Cube_\kappa$, $o_j \in RO_\kappa-Cube_\kappa$, $cr(o_i,q) \geq cr(o_j,q)$;
+        \item No subset of $Cube_\kappa$ satisfies the above two conditions.
+    \end{itemize}
+\end{definition}
+
+For brevity, we refer to keywords cube as cube. Note that for an object o, it may exist in several cubes of different keywords set. In this paper hereafter, we use CubeTree to denote the algorithm and cubeTree to represent tree structure described below, whenever there is no ambiguity.
+
+\begin{figure}
+\centering
+\includegraphics[width=3in,height=1.5in]{cubeTree}
+\caption{The cubeTree of query q in Table \ref{T2}} \label{F2}
+\end{figure}
+
+Each node of cubeTree of the form $(NID,\kappa,Cube_\kappa)$, where NID is the identifier of the cubeTree node. $\kappa$ and $Cube_\kappa$ denote the keywords set and the corresponding cube, respectively. Fig. \ref{F2} depicts the cubeTree for query in Table \ref{T2}.
+
+In a nutshell, CubeTree algorithm builds the cubeTree iteratively in a bottom-up manner. For k query keywords, there are up to $2^k-1$  nodes to be computed, which results in vast computation overhead. To alleviate the overhead, we adopt a strategy which can balance the overhead and the approximation bound. In this paper, instead of computing all of the nodes, we only compute a fraction of them as follows.
+
+CubeTree iteratively constructs higher-level node by combining two adjacent low-level nodes, until there is only one single node in current level, which is the root node of cubeTree. In doing so, we only need to compute  $\frac{k \cdot (k+1)}{2}$ nodes, which significantly reduces the computation overhead.
+
+As illustrated in Fig. \ref{F2}. In the bottom of cubeTree, there are two nodes corresponding to two query keywords, then we combine the adjacent two nodes, namely, N1 and N2 to form the higher-lever node N3. We return the cube of N3 as our approximation solution directly.
+
+\begin{lem}
+    If $\frac{cov(o_l,q)}{cd(o_l,q)} \geq \frac{cov(o_m,q)}{cd(o_m,q)} \geq \frac{cov(o_n,q)}{cd(o_n,q)}$,then we have $\frac{cov(o_l,q)+cov(o_m,q)}{cd(o_l,q)+cd(o_m,q)} \geq \frac{cov(o_n,q)}{cd(o_n,q)}$.
+    \begin{pot}
+        It's obvious with the basic knowledge of fraction, we omit the proof here.
+   \end{pot}
+\end{lem}
+
+With this lemma, we can construct the cubeTree with a simple strategy. In each iteration, we add the object with maximum $cr(o,q)$  into the cube of higher-level node instead of the object with maximum coverage weight.
+
+We summarize our discussion above by three steps:
+\begin{itemize}
+    \item Step 1 (Construct the bottom nodes): Construct the bottom nodes of cubeTree with KHT.
+    \item Step 2 (Combine the low-level nodes): In this step, we obtain the higher-level node by combining two adjacent low-level nodes.
+    \item Step 3 (Iterative step): Repeat Step 2 until there is only one single node in current level and we take this node as root. Then we return the cube of root as our final solution.
+\end{itemize}
+
+%CubeTree Algorithm
+\IncMargin{1em}
+\begin{algorithm}[h]
+\caption{$CubeTree$}  \label{A1}  % 给算法一个标签，以便其它地方引用该算法
+%\DontPrintSemicolon
+\SetKwData{lcID}{lcID}\SetKwData{rcID}{rcID}
+\SetKwData{G}{G}\SetKwData{cID}{cID}
+\SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}
+\Input {The $KHT$ and the query $q$.}
+\Output{A group $G$ of objects as approximation solution.}
+\BlankLine
+\LinesNumbered
+\G$\longleftarrow \emptyset$\;
+\lcID$\longleftarrow 0$; \rcID$\longleftarrow 0$; \cID$\longleftarrow 0$\;
+\For{$i \longleftarrow 0$ \KwTo $|q.\omega|-1$}{
+    cID $\longleftarrow 2^{i}$\;
+    $\kappa \longleftarrow q.\omega[i]$\;
+    construct the $Cube_\kappa$ of keywords set $\kappa$\ with $KHT$\;
+    put the node $(cID, \kappa, Cube_\kappa)$ into $cubeTree$\;
+}
+
+\For{$i \longleftarrow 2$ \KwTo $|q.\omega|$}{
+    \For{$j \longleftarrow 0$ \KwTo $|q.\omega|-i$}{
+        \eIf{$j == 0$} {
+        $seq \longleftarrow 2^{i}-1$\;
+        } {
+           $ seq  \longleftarrow seq \times 2$\;
+        }
+        \cID $\longleftarrow seq$\;
+        \lcID $\longleftarrow seq-2^{i+j-1}$\;
+        \rcID $\longleftarrow seq-2^{j}$\;
+        $\kappa \longleftarrow cubeTree[lcID].\kappa \cup cubeTree[rcID].\kappa$\;
+        $cubecID \longleftarrow combineCube(lcID,rcID)$\;
+        put the node $(cID, \kappa, cubecID)$ into $cubeTree$\;
+  }
+}
+$solutionID \longleftarrow 2^{|q\cdot\omega|}-1$\;
+$G \longleftarrow$ the cube of $cubeTree[solutionID]$\;
+return $G$ as the final solution\;
+\end{algorithm}
+\DecMargin{1em}
+
+The pseudocode of CubeTree is outlined in Algorithm \ref{A1}. CubeTree takes a bottom-up strategy to construct the cubeTree. CubeTree consists of two phases. In the first phase (lines 3-7), it builds the bottom nodes with KHT. Then, in the second phase (lines 8-19), by combining two adjacent low-level nodes (line 18), namely $cubeTree[lcID]$ and $cubeTree[rcID]$ to form a higher-level node $cubeTree[cID]$ in an iterative manner, until there is only one single node in this level, which is the root node. Finally, we return the cube of root as our final solution.
+
+Algorithm \ref{A2} elaborates the procedure of the combination process. We use $oidl$ and $oidr$ to record the current optimal object of $cubeTree[lcID]$ and $cubeTree[rcID]$ respectively (lines 4-5). If $cr(oidl,q) \geq cr(oidr,q)$, we verify whether $oidl$ contained by $cubecID$ or not (line 7). If $oidl$ has been in $cubecID$, then we delete it from $cubeTree[lcID]$ and continue to select the next object. Otherwise, we add it into $cubecID$ and update the coverage weight of keywords in $\kappa$ accordingly. Otherwise, if $cr(oidl,q)<cr(oidr,q)$, we tackle the $oidr$ as the way of $oidl$. Finally, we return the cube of node $cID$ to Algorithm \ref{A1}.
+
+%Algorithm of combineCube
+\IncMargin{1em}
+\begin{algorithm}[!h]
+\caption{$combineCube$}  \label{A2}  % 给算法一个标签，以便其它地方引用该算法
+%\DontPrintSemicolon
+\SetKwData{lcID}{lcID}\SetKwData{rcID}{rcID}
+\SetKwData{cID}{cID}
+\SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}
+%\Input {The adjacent two low-level nodes, cubeTree[lcID] and cubeTree[rlID].}
+%\Output{The cube of the higher-level node cubeTree[cID].}
+\Input {Two low-level nodes lcID and rcID.}
+\Output{The cube of the node cID.}
+\BlankLine
+\LinesNumbered
+$cubecID \longleftarrow \emptyset$\;
+$\kappa \longleftarrow cubeTree[lcID].\kappa \cup cubeTree[rcID].\kappa$\;
+\While{exists $\lambda \in \kappa$ and $cov(cubecID,\lambda) < q.\theta$}{
+    $oidl \longleftarrow$ the object with maximum $cr(o,q)$ in the cube of $cubeTree[lcID]$\;
+    $oidr \longleftarrow$ the object with maximum $cr(o,q)$ in the cube of $cubeTree[rcID]$\;
+    %$oid \longleftarrow \max(oidl,oidr)$\;
+
+    \eIf{$cr(oidl,q) \geq cr(oidr,q)$}{
+        \eIf{$oidl \in cubecID$} {
+            delete $oidl$ from the cube of $cubeTree[lcID]$\;
+            continue\;
+        }{
+            put $oidl$ into $cubecID$\;
+            delete $oidl$ from the cube of $cubeTree[lcID]$\;
+            %update the coverage probability of keywords in $cubeTree[cID].\kappa$\;
+            \For{each $\lambda \in \kappa$} {
+                update the $cov(cubecID,\lambda)$\;
+            }
+        }
+    }{
+        \eIf{$oidr \in cubecID$} {
+            delete $oidr$ from the cube of $cubeTree[rcID]$\;
+            continue\;
+        }{
+            put $oidr$ into the $cubecID$\;
+            delete $oidr$ from the cube of $cubeTree[rcID]$\;
+            %update the coverage probability of keywords in $cubeTree[cID].\kappa$\;
+            \For{each $\lambda \in \kappa$} {
+                update the $cov(cubecID,\lambda)$\;
+            }
+        }
+    }
+}
+return $cubecID$\;
+\end{algorithm}
+\DecMargin{1em}
+
+\begin{thm}
+    The approximation ratio of CubeTree is not larger than $\frac{cw_{max} \cdot cr_{max}}{cr_{min}\cdot q.\theta}$.
+    \begin{pot}
+        Assuming that G is the solution returned by CubeTree. We use $cw_{max}=max_{\lambda \in q.\omega}cov(G,\lambda)$ to denote the maximum coverage weight of keyword in $q.\omega$. The maximum and minimum contribution ratio of object in G are $cr_{max}$ and $cr_{min}$, respectively. We know that the cost of optimal solution:
+        \begin{equation} \label{E4}
+            Cost(Opt) \geq \frac{|q.\omega| \cdot q.\theta}{cr_{max}}
+        \end{equation}and meanwhile,
+        \begin{equation} \label{E5}
+            Cost(G) \leq \frac{|q.\omega| \cdot cw_{max}}{cr_{min}}
+        \end{equation}holds. Combining inequalities (\ref{E4}) and (\ref{E5}), we know that
+        \begin{displaymath}
+            \frac{Cost(G)}{Cost(Opt)} \leq \frac{cw_{max} \cdot cr_{max}}{cr_{min}\cdot q.\theta}.
+        \end{displaymath}
+    \end{pot}
+\end{thm}
+
+\subsection{Approximation Algorithm MaxMargin}
+In section 5.1 we show how to utilize the CubeTree algorithm to handle our problem. Although CubeTree can solve our problem with provable approximation ratio, however, as presented in Theorem 2, the approximation ratio of CubeTree is unstable due to the relevance with final solution. In this section, we elaborate the MaxMargin algorithm, which is inspired by the greedy strategy adopted by the WSC problem \cite{chvatal1979greedy}, which with more stable performance in terms of approximation ratio. To address WSC problem, the greedy strategy iteratively selects the current optimal subset and updates subsets that have not been visited yet accordingly. We modify this strategy by iteratively selecting the object with maximum $cr(o,q)$, and updating objects that have not been visited for our problem. The naive version of MaxMargin solves the problem by four steps. We use G to reserve the solution.
+\begin{itemize}
+    \item Step 1 (Construct the $RO_q$): Construct the relevant set $RO_q$ with KHT and sort the objects of $RO_q$ in descending order of $cr(o,q)$.
+    \item Step 2 (Select the optimal object): In this step, MaxMargin adds the current optimal object o with maximum $cr(o,q)$ into G. Then, o is deleted from $RO_q$.
+    \item Step 3 (Update $RO_q$): After adding o into G, we update the $cr(o,q)$ of remaining objects in $RO_q$.
+    \item Step 4 (Iterative step): Repeat Step 2 and Step 3 until the weight constraint in definition 4 is satisfied. Then we take G as our final solution.
+\end{itemize}
+
+Obviously, two major drawbacks degrade the performance of naive version: 1) lacking of efficient pruning strategies; 2) updating all the remaining objects for each iteration in Step 3 is time consuming. To further boost the search efficiency, we take a look at several notions which settle aforementioned drawbacks collectively.
+
+\begin{definition}
+    \textbf{(Keyword Max Priority Queue).}: For a given keyword $\lambda$, we define the Keyword Max Priority Queue (KMPQ) of $\lambda$ as the max priority queue of $RO_\lambda$ according to the value of $cr(o,q)$.
+\end{definition}
+
+Each element of KMPQ of the form $(nid,oid,cr,cv)$, where nid and oid correspond to the identifier of element and the object, respectively. $cr$ represents the contribution ratio of oid and cv is a $|q.\omega|$ dimensions vector to record the $cw(o,\lambda)$ for each keyword in $q.\omega$. Instead of constructing the $RO_q$, we construct the KMPQ for each query keyword. Once $cov(G,\lambda)$ reaches $q.\theta$, we can prune objects in the KMPQ of $\lambda$ safely, which significantly exalts the performance.
+
+To address the second drawback, we expand the notion of contribution ratio to fit in with our algorithm.
+
+\begin{definition}
+    \textbf{(Dynamic contribution ratio).}: Given a query q and an object o, we define the dynamic contribution ratio (dcr) of object o in iteration r as follows:
+    \begin{equation}
+        dcr_{q}^{r}(o)=\frac{cov^r(o,q)}{cd(o,q)}
+    \end{equation}
+\end{definition}
+
+Note that the major difference between $dcr_{q}^{r}(o)$ and $cr(o,q)$ is that, we replace $cov(o,q)$ with $cov^r(o,q)$, where $cov^r(o,q)$ denotes the last contribution ratio of o after $r$th object added into result set. We do not update $dcr$ for object o in each iteration r until o is chosen as the current optimal object.
+
+\begin{lem}
+    Given a query q, an object o, two integers m, n and $m \leq n$, then $dcr_{q}^{n}(o)\leq dcr_{q}^{m}(o)$.
+    \begin{pot}
+        After each iteration r, the value of $cov^r(o,q)$ is comparable or below than the former iteration. Besides, $cd(o,q)$ is constant in each iteration, which results in the decreasing of $dcr^{r}_{q}(o)$. If $m\leq n$, we can safely draw the conclusion that the $dcr_{q}^{n}(o)$ is not larger than $dcr_{q}^{m}(o)$.
+    \end{pot}
+\end{lem} \label{L2}
+
+Instead of updating all the remaining objects after each iteration, we update the object until it is chosen as the optimal object. Lemma 2 indicates that we can always choose the newly updated object with maximum $dcr^{r}_{q}(o)$ as current optimal object, and objects whose $dcr$ less than $dcr^{r}_{q}(o)$ unnecessary to be updated, which significantly prunes the updating overhead.
+
+We summarize the aforementioned discussion by following three steps to improve the naive version. And we use G to reserve the final solution and RV to record the residuals.
+\begin{itemize}
+    \item Step 1 (Construct the KMPQ): In this step, we construct the KMPQ for each keyword of $q.\omega$.
+    \item Step 2 (Select the optimal object): Select the current optimal object o from all the KMPQs. If o already in G, then continue to select next optimal object. Otherwise, we add o into G if $cov^r(o,q)$ less than RV in all dimensions. Otherwise, we update the $cr(o,q)$ of o and reinsert it into KMPQ.
+    \item Step 3 (Iterative step): Repeat Step 2 until RV equals to 0 in all dimensions. Then we take G as our final solution.
+\end{itemize}
+
+Algorithm \ref{A3} illustrates the details of MaxMargin algorithm.
+%MaxMargin algorithm
+\IncMargin{1em}
+\begin{algorithm}[!htb]
+\caption{$MaxMargin$} \label{A3}   % 给算法一个标签，以便其它地方引用该算法
+%\DontPrintSemicolon
+\SetKwData{G}{G}\SetKwData{RV}{RV}\SetKwData{indicator}{indicator}
+\SetKwData{PQ}{PQ} \SetKwData{maxMargin}{maxMargin}
+\SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}
+\Input {The $KHT$ and the query $q$.}
+\Output{A group $G$ of objects as approximation solution.}
+\BlankLine
+\LinesNumbered
+\G$\longleftarrow \emptyset$; \maxMargin $\longleftarrow 0.0$; \indicator $\longleftarrow -1$\;
+\For{$i \longleftarrow 0$ \KwTo $|q.\omega|-1$} {
+    $RV[i] \longleftarrow q.\theta$\;
+    construct the KMPQ $PQ[i]$ for $q.\omega[i]$ with $KHT$\;
+}
+$r \longleftarrow 0$\;
+\While{exists a dimension i satisfies $RV[i]>0.0$} {
+    \For{each valid $PQ[j] \in PQ$} {
+        $o \longleftarrow PQ[j].top()$\;
+        \If{$dcr_q^r(o)>maxMargin$} {
+            $maxMargin \longleftarrow dcr_q^r(o)$\;
+            $indicator \longleftarrow j$\;
+            $maxOID \longleftarrow o$\;
+        }
+    }
+    \If{$maxOID \in G$} {
+        $PQ[indicator].dequeue()$\;
+        continue\;
+    }
+    \eIf{all dimensions satisfy $maxOID.cv[i]<RV[i]$} {
+        \G $\longleftarrow G\cup \{maxOID\}$\;
+        \For{$j \longleftarrow 0$ \KwTo $|q.\omega|-1$} {
+            \eIf{$RV[j]\geq maxOID.cv[j]$} {
+                $RV[j] \longleftarrow RV[j]-maxOID.cv[j]$\;
+            } {
+                $RV[j] \longleftarrow 0$\;
+                set the $PQ[j]$ to be invalid\;
+            }
+        }
+        $PQ[indicator].dequeue()$\;
+        r++\;
+    } {
+        \For{$j \longleftarrow 0$ \KwTo $|q.\omega|-1$} {
+            \If{$RV[j]< maxOID.cv[j]$} {
+                $maxOID.cv[j] \longleftarrow RV[j]$\;
+            }
+        }
+        recompute the $dcr_q^r(maxOID)$\;
+        $PQ[indicator].dequeue()$\;
+        $PQ[indicator].enqueue(maxOID)$\;
+    }
+}
+return $G$ as the final solution\;
+\end{algorithm}
+\DecMargin{1em}
+
+ MaxMargin utilizes the residual vector RV to record the difference between $q.\theta$ and the coverage weight of G for each query keyword dynamically. Initially, each dimension of RV is set to be $q.\theta$ (line 3). There are two different cases when processing the selected optimal object in each iteration. Case 1: If all dimensions satisfy $maxOID.cv[i]<RV[i]$ (lines 16-25), it needs not to update maxOID and we update RV accordingly. Case 2: Otherwise, we update the dcr of $maxOID$ and the PQ[indicator]. Algorithm terminates until RV equals to 0. Note that, in Algorithm \ref{A3}, we set $PQ[j]$ to invalid if $RV[j]$ is 0 (line 23). Put differently, we prune all the objects in $PQ[j]$ once the $cov(G,q.\omega[j])$ reaches the threshold $q.\theta$. What's more, we update the object $maxOID$ (lines 27-32) only when the coverage weight of o larger than RV in some dimensions instead of updating the remaining $RO_q$ in naive version. Both of these two strategies significantly improve the performance of MaxMargin algorithm.
+
+\begin{figure}
+\centering
+\includegraphics[width=3.5in, height=3.5in]{maxMargin}
+\caption{KMPQ of query q in Table \ref{T2}}
+\label{F3}
+\end{figure}
+
+\textbf{Example 2}: Let's go back to the KaGWC query q depicted in Table \ref{T2}. As illustrated in Fig. \ref{F3}, we answer the query q in four steps, as follows.
+\begin{itemize}
+    \item Step 1 (Initial state): In this step, we construct the KMPQ for ``mountain'' and ``temple'', and initiate the $RV=\{0.4,0.4\}$ and $G=\emptyset$ as depicted in Figs. \ref{F3}a and \ref{F3}b.
+    \item Step 2 (Fetch $o_3$): Due to the two KMPQs have common optimal object $o_3$, we can select $o_3$ from any of these two KMPQs. And we select $o_3$ from ``mountain''. After fetching $o_3$ from ``moutain'', the KMPQ of ``moutain'' is reorganized and the RV and G are updated as Fig. \ref{F3}c.
+    \item Step 3 (Delete $o_3$): As depicted in Figs. \ref{F3}c and \ref{F3}d. After fetching $o_3$, the current optimal object is $o_3$ of ``temple''. However, $o_3$ has been in G. So we delete it from ``temple'' directly, as illustrated in Fig. \ref{F3}f.
+    \item Step 4 (Fetch $o_1$): Again, the two KMPQs have common optimal object. We select $o_1$ from ``mountain'', and put it into G. Up to now, RV is equal to 0. We terminate our procedure and return G as the final solution.
+\end{itemize}
+
+\begin{thm}
+    The approximation ratio of MaxMargin is not larger than $\frac{H(\lfloor cov+1\rfloor)}{q.\theta}$, where $cov$ is the largest $cov(o_j,q)$ for all $o_j \in RO_q$.
+    \begin{pot}
+        Inspired by the proof in \cite{chvatal1979greedy}, we provide the approximation ratio proof of MaxMargin here. We use m, n to denote the number of elements in $|q.\omega|$ and $|RO_q|$ respectively. We define a $m\times n$ matrix $P=(p_{ij})$ by
+        \begin{displaymath}
+            p_{ij} = \left \{
+                \begin{array}{ll}
+                    cw(o_j,q.\omega[i]) & \textrm{if $q.\omega[i] \in o_j.\omega$,}\\
+                    0 & \textrm{otherwise.}\\
+                \end{array} \right.
+        \end{displaymath}
+
+        According to the definition of P, we know that the n columns of P is n coverage weight vectors of n objects. The goal of MaxMargin is to retrieve a group G of objects. And we utilize the incidence vector $x=(x_j)$ to denote the cover set. Clearly, the incidence vector x of an arbitrary cover satisfies:
+
+        \begin{eqnarray*}
+            \sum_{j=1}^n p_{ij}x_j \geq q.\theta & for\ all\ i, \\
+             x_j \in \{0,1\}  & for \ all \ j.\\
+        \end{eqnarray*}
+
+        For ease of presentation, in the following, we refer to the cost distance of $o_j$ as $c_j$. And we claim that these inequations imply
+        \begin{equation} \label{E6}
+            \sum_{j=1}^{n} H(\lfloor cov_j^1+1\rfloor)c_j x_j\geq q.\theta \sum(c_j: where\ o_j \in G)
+        \end{equation}
+        for the cover G returned by the greedy heuristic. Once (\ref{E6}) is proved, the theorem will follow by letting x be the incidence vector of an optimal cover.
+
+        To prove (\ref{E6}), it will suffice to exhibit nonnegative numbers $y_1, y_2, ..., y_m$ such that
+         \begin{equation} \label{E7}
+            \sum_{i=1}^{m}p_{ij}y_{i} \leq H(\sum_{i=1}^{m}p_{ij})c_{j} \quad for\ all\ j
+        \end{equation}
+        and such that
+         \begin{equation} \label{E8}
+            \sum_{i=1}^{m} y_{i} = \sum(c_j: where\ o_j \in G)
+        \end{equation}
+        for then
+        \begin{eqnarray*}
+            \sum_{j=1}^n H(\sum_{i=1}^m p_{ij})c_j x_j &\geq& \sum_{j=1}^n (\sum_{i=1}^m p_{ij} y_i)x_j\\
+            &=& \sum_{i=1}^m(\sum_{j=1}^n p_{ij}x_j)y_i \\
+            &\geq& q.\theta \sum_{i=1}^m y_i\\
+            &=& q.\theta \sum(c_j: where\ o_j \in G)\\
+        \end{eqnarray*}
+        as desired.
+
+        The numbers $y_1, y_2, ..., y_m$ satisfying (\ref{E7}) and (\ref{E8}) have a simple intuitive interpretation: each $y_i$ can be interpreted as the cost paid by MaxMargin for covering the keyword $q.\omega[i]$. We use $cov_{j}^{r}$ to denote the coverage weight of query q covered by object $o_j$ at the beginning of iteration r. Without loss of generality, we may assume that G is \{$o_1$,$o_2$,...,$o_r$\}  after r iteration, and so
+        \begin{displaymath}
+            \frac{cov_{r}^{r}}{c_r} \geq \frac{cov_{j}^{r}}{c_j}
+        \end{displaymath}
+        for all r and j. If there are t iterations altogether then
+        \begin{displaymath}
+            \sum(c_j: j \in G)=\sum_{j=1}^{t}c_{j},
+        \end{displaymath}
+        and
+        \begin{displaymath}
+            y_{i}=\sum_{r=1}^{t}\frac{c_{r}\cdot cw(o_r, q.\omega[i])}{cov_{r}^{r}}.
+        \end{displaymath}
+        We know that
+        \begin{displaymath}
+            \sum_{i=1}^{m}y_i=\sum_{i=1}^{m}\sum_{r=1}^{t}\frac{c_{r}\cdot cw(o_r,  q.\omega[i])}{cov_{r}^{r}}=\sum_{r=1}^{t}c_{r}
+        \end{displaymath}
+
+        For any $o_j$ in $RO_q$, we know that the $cov_{j}^{r}$ decrease as the iteration continues. We assume s is the largest superscript such that $cov_{j}^{s}>0$ then
+        %\begin{flushleft}
+        \begin{eqnarray*}
+            \sum_{i=1}^{m}p_{ij}y_{i}&=&\sum_{r=1}^{s}(cov_j^r-cov_j^{r+1})\cdot \frac{c_r}{cov_r^r}\\
+            &\leq& c_j\sum_{r=1}^{s}\frac{cov_j^r-cov_j^{r+1}}{cov_j^r}\\
+            &=&c_j\sum_{r=1}^s\frac{cov_j^r-cov_j^{r+1}}{cov_j^r}\\
+            &\leq& c_j\sum_{r=1}^s\frac{\lfloor cov_j^r + 1\rfloor - \lfloor cov_j^{r+1}\rfloor}{\lfloor cov_j^r + 1\rfloor} \\
+            &=&c_j\sum_{r=1}^s \sum_{l=\lfloor cov_j^{r+1} +1\rfloor}^{\lfloor cov_j^r +1\rfloor} \frac{1}{cov_j^r}\\
+            &\leq& c_j\sum_{r=1}^s \sum_{l=\lfloor cov_j^{r+1} +1\rfloor}^{\lfloor cov_j^r +1\rfloor} \frac{1}{l}\\
+            &=&c_jH(\lfloor cov_j^1 +1\rfloor)-c_jH(\lfloor cov_j^s+1\rfloor)\\
+            &\leq& c_jH(\lfloor cov_j^1+1\rfloor)\\
+        \end{eqnarray*}
+        %\end{flushleft}
+    \end{pot}
+\end{thm}
+
+\subsection{The Exact Algorithm MergeList}
+For many real application scenarios, the number of query keywords submitted by users is limited. Motivated by this observation, we devise an exact algorithm MergeList in this section.
+
+The straightforward method for the exact algorithm is to enumerate all the subsets of $RO_q$ and return the subset, which covers the query keywords not less than a given threshold and with minimum cost, as our optimal solution. This yields an exponential time complexity in terms of the number of objects in $RO_q$.
+
+To further prune the search space, we delve into several efficient pruning strategies below.
+
+Firstly, we sort the objects of $RO_q$ in ascending order of the cost distance. And we record the current optimal solution and its cost with notations $COS$ and $minCost$. Instead of enumerating all the subsets of $RO_q$ randomly, we construct the candidate subsets whose cost less than minCost by adding object into existing candidate subsets progressively.
+
+\begin{lem}
+    Given a sorted $RO_q$ which in ascending order of the cost distance. If for each existing candidate set \textbf{ecs}, the cost sum of ecs and the current visitorial object \textbf{cvo} in $RO_q$ is not less than minCost, then COS is the optimal solution.
+    \begin{pot}
+        Since $RO_q$ is sorted in ascending order of the cost distance. We know that each object behind cvo in $RO_q$ has a higher cost than cvo. If the cost sum of any ecs and cvo is not less than minCost, we can conclude that any ecs can not be the optimal solution, so we can terminate our procedure immediately.
+    \end{pot}
+\end{lem} \label{L5}
+
+Secondly, there is an \textbf{\textit{``Apriori property''}} in the data mining field. \textbf{\textit{``All nonempty subsets of a frequent itemset must also be frequent''}}. In the sequel, we present a similar pruning strategy.
+
+\begin{lem}
+    If the cost sum of an ecs and cvo larger than the minCost, we can prune the ecs safely and any superset of it needs not to be computed.
+    \begin{pot}
+        If the cost sum of an ecs and cvo larger than the minCost, we know that ecs cannot be the optimal solution and any superset of ecs neither can be the optimal solution as well, so we can prune them safely.
+    \end{pot}
+\end{lem} \label{L6}
+
+Further, only if G is a feasible solution, we can filter out any superset G', since G is superior to G' anyway.
+
+In a word, Lemma 3 allows us to terminate the procedure earlier and Lemma 4 provides significant pruning ability. We elaborate the MergeList in Algorithm \ref{A4}.
+
+The MergeList algorithm can be summarized as following three steps.
+\begin{itemize}
+    \item Step 1 (Construct $RO_q$): In this step, we construct the $RO_q$ and sort it in ascending order of cost distance.
+    \item Step 2 (Add o into $ecs$): For object o in $RO_q$, we verify for each ecs whether delete it from candidate sets $SS$ or combine it with o and put it into $SS$.
+    \item Step 3 (Iterative step): Repeat Step 2, until the terminal condition in Lemma 3 is met.
+\end{itemize}
+
+%The MergeList algorithm
+\IncMargin{1em}
+\begin{algorithm}[!hb]
+\caption{$MergeList$} \label{A4}   % 给算法一个标签，以便其它地方引用该算法
+%\DontPrintSemicolon
+\SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}
+\Input {The $KHT$ and the query $q$.}
+\Output{A group $G$ of objects as resulting solution.}
+\BlankLine
+\LinesNumbered
+$COS \longleftarrow \emptyset$\;
+$SS \longleftarrow \emptyset$\;
+$minCost \longleftarrow$ INFINITE\_MAX\;
+$RO_q \longleftarrow$ compute the relevant object set to query q with $KHT$\;
+sort $RO_q$ in ascending order of weight distance cost\;
+put empty set ${\O}$ into SS\;
+\For{each object $o \in RO_q$} {
+    \If{$wd(o,q)\geq minCost$} {
+        break\;
+    }
+    \For{each $ecs \in SS$}{
+        \If{the cost sum of $ecs$ and $o$ not less than $minCost$} {
+            delete $ecs$ from $SS$\;
+            continue\;
+        }
+        $tempSet \longleftarrow ecs\cup \{o\}$\;
+        \eIf{$tempSet$ is a feasible solution} {
+            $COS \longleftarrow tempSet$\;
+            $minCost \longleftarrow$ the cost of $tempSet$\;
+            delete $ecs$ from $SS$\;
+        } {
+            put $tempSet$ into SS\;
+        }
+    }
+    \If{$SS == {\O}$} {
+        break\;
+    }
+}
+$G \longleftarrow COS$\;
+return $G$ as the final solution\;
+\end{algorithm}
+\DecMargin{1em}
+
+As discussed above, in MergeList algorithm, we construct the candidate set by adding the object into ecs progressively. We use $SS$ to store the ecs, and initiate $SS$ with the empty set (line 6). For each object o in $RO_q$, if the cost of o not less than minCost then we terminate our procedure (lines 8-9). Otherwise, for each ecs satisfies Lemma 4, we prune it directly (lines 11-13). If $tempSet$ is a feasible solution, we use it to update the $COS$ and $minCost$ (lines 15-18), otherwise we add it into $SS$.
+
+%\begin{table}[h]
+%\centering
+%\begin{tabular}{|c|c|c|c|c|c|}
+%\hline
+% OID & $o_1$ & $o_2$ & $o_3$ & $o_4$ & $o_5$\\
+%\hline
+ %Cost Distance to q& 2 & 2.5 & 4 & 5 & 7 \\
+%\hline
+% CP &0.1, 0.0&0.1, 0.3&0.3, 0.1&0, 0.3&0.1, 0.3\\
+%\hline
+%\end{tabular}
+%\caption{An example of MergeList} \label{T6}
+%\end{table}
+\begin{figure}[!ht] \centering
+    \subfigure[] { \label{MergeList-Q}
+    \includegraphics[width=3in,height=0.5in]{MergeList-Q}
+    }
+    \subfigure[] { \label{MergeList-S}
+    \includegraphics[width=3in,height=1.2in]{MergeList-S}
+    }
+\caption{An example of MergeList}
+\label{F30}
+\end{figure}
+
+\textbf{Example 3}: Consider a query q with two keywords $q.\omega=\{\lambda_1, \lambda_2\}$. Fig. \ref{F30}a illustrates the $RO_q$ and the cost distance to q and the corresponding coverage weight. We illustrate the process of MergeList in Fig. \ref{F30}b. There are total six steps to answer this query.
+\begin{itemize}
+    \item Step 1 (Initiation): We initiate the $SS$, $minCost$ and $COS$ in this step.
+    \item Step 2 (Visit $o_1$): Due to $RO_q$ in Fig. \ref{F30}a has been sorted, we visit the object according to the order in Fig. \ref{F30}a We first visit $o_1$, and merge it with ecs in $SS$.
+    \item Step 3 (Visit $o_2$): Object $o_2$ is merged with ecs in $SS$.
+    \item Step 4 (Visit $o_3$): In this step, we obtain a feasible solution $COS=\{o_2,o_3\}$. And to filter candidate sets with Lemma 4.
+    \item Step 5 (Visit $o_4$): In this step, ecs which satisfies Lemma 4 is pruned by COS.
+    \item Step 6 (Visit $o_5$): Because the cost of $o_7$ is larger than $minCost$, so Lemma 3 is met and COS is the optimal solution.
+\end{itemize}
+
+%\begin{table}[h]
+%\centering
+%\begin{tabular}{|c|c|p{2cm}|c|c|}
+%\hline
+% SID & Action & SS & minCost & COS\\
+%\hline
+%$S_0$ & Initiation & $\emptyset$ & $+\infty$ & $\emptyset$\\
+%$S_1$ & Visit $o_1$ & $\emptyset$,\{$o_1$\} & $+\infty$ & $\emptyset$\\
+%$S_2$ & Visit $o_2$ & $\emptyset$,\{$o_1$\},\{$o_2$\},\{$o_1,o_2$\} & $+\infty$ & $\emptyset$\\
+%$S_3$ & Visit $o_3$ & $\emptyset$,\{$o_1$\},\{$o_2$\},\{$o_1,o_2$\},\{$o_3$\},\{$o_1,o_3$\} & 6.5 & \{$o_2,o_3$\}\\
+%$S_4$ & Visit $o_4$ & $\emptyset$,\{$o_4$\} & 6.5 & \{$o_2,o_3$\}\\
+%$S_5$ & Visit $o_5$ & $\emptyset$,\{$o_4$\} & 6.5 & \{$o_2,o_3$\}\\
+%\hline
+%\end{tabular}
+%\caption{The process of MergeList} \label{T7}
+%\end{table}
+
+\begin{thm}
+    (Correctness of MergeList): The MergeList algorithm always produce the correct result set.
+    \begin{pot}
+        Assuming the number of objects in $RO_q$ is n, hence, there are up to $2^n-1$ candidate sets. Each ecs either used to update the $COS$ or pruned by the $COS$. If the cost of ecs less than $minCost$, we take ecs as our $COS$. Otherwise, we prune ecs and any superset of it. Hence, it is suffice to show that MergeList never prune any feasible solution whose cost less than $minCost$ (false negatives), and never maintain the ecs whose cost larger than $minCost$ (false positives). So the MergeList algorithm always produce the correct result.
+    \end{pot}
+\end{thm}
+

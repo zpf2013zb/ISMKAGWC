@@ -1,0 +1,15 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Problem Statement}{}% 2
+\BOOKMARK [1][-]{section.3}{Related Work}{}% 3
+\BOOKMARK [2][-]{subsection.3.1}{Conventional Spatial Keyword Queries}{section.3}% 4
+\BOOKMARK [2][-]{subsection.3.2}{Collective Keyword Queries}{section.3}% 5
+\BOOKMARK [1][-]{section.4}{KHT Index}{}% 6
+\BOOKMARK [1][-]{section.5}{Algorithms}{}% 7
+\BOOKMARK [2][-]{subsection.5.1}{Approximation Algorithm CubeTree}{section.5}% 8
+\BOOKMARK [2][-]{subsection.5.2}{Approximation Algorithm MaxMargin}{section.5}% 9
+\BOOKMARK [2][-]{subsection.5.3}{The Exact Algorithm MergeList}{section.5}% 10
+\BOOKMARK [1][-]{section.6}{Empirical Study}{}% 11
+\BOOKMARK [2][-]{subsection.6.1}{Experimental Setup}{section.6}% 12
+\BOOKMARK [2][-]{subsection.6.2}{Results on Synthetic Dataset}{section.6}% 13
+\BOOKMARK [2][-]{subsection.6.3}{Results on Real Dataset}{section.6}% 14
+\BOOKMARK [1][-]{section.7}{Conclusions and Future Work}{}% 15

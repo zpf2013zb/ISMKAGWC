@@ -1,0 +1,55 @@
+%pre-processing
+In most cases, given a query q, we only need to visit a fraction of objects in that most of the objects have nothing to do with this query. Motivated by this observation, we introduce the pre-processing phase. We use the pre-processing result to accelerate the algorithms to be proposed. The task of the pre-processing is to construct the keywords inverted index structure which is organized as a hash table with \textbf{\textit{perfect hashing technique}}. For brevity, we will refer to them as KHT.
+\begin{table}
+\centering
+\begin{tabular}{|l|l|c|c|}
+\hline
+Keywords & OList & First Index & Second Index \\
+%OID & Position_x & Position_y & Associated keywords \\
+\hline \hline
+$mountain$ & $o_1,o_3,o_7,o_{10}$ & 5 & 0\\
+\hline
+$forest$ & $o_3,o_9$ & 6 & 1 \\
+\hline
+$landscape$ & $o_1,o_7$ & 6 & 2 \\
+\hline
+$shore$ & $o_2,o_4,o_5$ & 6 & 1 \\
+\hline
+$temple$ & $o_1,o_3,o_6$ & 1 & 0 \\
+\hline
+$museum$ & $o_2,o_7$ & 2 & 0 \\
+\hline
+$architecture$ & $o_5,o_6$ & 5 & 1 \\
+\hline
+$drigtate$ & $o_5,o_{10}$ & 0 & 0 \\
+\hline
+$glacier$ & $o_8,o_{10}$ & 4 & 0 \\
+\hline
+\end{tabular}
+\caption{$KHT$ entries}\label{T4}
+\end{table}
+
+In a nutshell, the KHT consists of two major parts:
+\begin{itemize}
+    \item Distinct keywords: A vocabulary of all the distinct keywords appearing in the object database.
+    \item OID list: For each distinct keyword $\lambda$, there is a posting list which records the $RO_\lambda$.
+\end{itemize}
+
+Each entry of KHT of the form $(\lambda,\lambda.olist)$, where $\lambda$ represents a keyword and $\lambda.olist$ is the $RO_\lambda$. Table \ref{T4} elaborates the KHT entries, and Figure \ref{F1} shows the KHT of Table \ref{T1}. Since the limitation of space, we omit the olist for each entry and only show the keyword part in Figure \ref{F1}.
+\begin{figure}
+\centering
+\includegraphics[width=3.5in,height=1.5in]{KHT}
+\caption{The KHT instance} \label{F1}
+\end{figure}
+
+We map each distinct keyword $\lambda$ into KHT with the two-levels hash function, the first level hash function generates a first index \textit{fi} for each distinct keyword. For keywords possessing the identical first index, we utilize the second level hash function to specify a second index \textit{si} for each of them. Note that, although the probability that two distinct keywords with the same $fi$ and $si$ is less than 0.5, which is demonstrated in \cite{cormen2001introduction}, yet we should take this situation into consideration. To address the conflict problem, \textbf{\textit{``linear probing''}} technique is applied in our work. From Table \ref{T4} we know that there is a conflict between ``forest'' and ``shore''. As illustrated in Figure \ref{F1}, when we try to insert the entry of ``shore'' into KHT, there is a entry ``forest'' in location $(6,1)$, due to location $(6,2)$ is occupied as well, with ``linear probing'', ``shore'' is inserted into $(6,3)$ ultimately, just as the solid arrow shown.
+
+With KHT, for a specific query q we can retrieve the $RO_q$ in nearly $\Theta(|q.\omega|)$, and prune the unnecessary visit hugely.
+
+
+
+
+
+
+
+

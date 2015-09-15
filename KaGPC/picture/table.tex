@@ -1,0 +1,21 @@
+% Preamble: \pgfplotsset{width=7cm,compat=1.11}
+\documentclass[a4paper]{article}
+% for dvipdfm:
+%\def\pgfsysdriver{pgfsys-dvipdfm.def}
+\usepackage{pgfplots}
+
+\begin{document}
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+ OID & $o_1$ & $o_2$ & $o_3$ & $o_4$ & $o_5$\\
+\hline
+ Cost Distance to q& 2 & 2.5 & 4 & 5 & 7 \\
+\hline
+ Coverage Weight &0.1, 0.0&0.1, 0.3&0.3, 0.1&0, 0.3&0.1, 0.3\\
+\hline
+\end{tabular}
+\caption{An example of MergeList} \label{T6}
+\end{table}
+\end{document}

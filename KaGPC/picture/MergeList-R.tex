@@ -1,0 +1,60 @@
+% Preamble: \pgfplotsset{width=7cm,compat=1.11}
+\documentclass[a4paper]{article}
+% for dvipdfm:
+%\def\pgfsysdriver{pgfsys-dvipdfm.def}
+\usepackage{pgfplots}
+
+\begin{document}
+\begin{tikzpicture}
+\pgfplotsset{every axis legend/.append style={
+at={(0.5,1.03)},
+line width=1.5pt,
+tick style={line width=1.5pt},
+anchor=south}}
+\begin{axis} [cycle list={%
+{blue,mark=triangle},
+{red,mark=square},
+{brown!60!black,
+mark options={fill=brown!40},
+mark=otimes*},
+},
+line width=1.5pt,
+legend columns=3,
+xlabel=$MergeList-KD$,
+ylabel=$URZA\_R$,
+domain=3:15
+]
+\addplot coordinates {
+(3,1)
+(5,1)
+(7,1)
+(9,1)
+(11,1)
+(13,1)
+(15,1)
+};
+
+\addplot coordinates{
+(3,1)
+(5,1)
+(7,1)
+(9,1)
+(11,1)
+(13,1)
+(15,1)
+};
+
+\addplot coordinates{
+(3,1)
+(5,1)
+(7,1)
+(9,1)
+(11,1)
+(13,1)
+(15,1)
+};
+
+\legend{$Uniform$,$Random$,$Zipf$}
+\end{axis}
+\end{tikzpicture}
+\end{document}

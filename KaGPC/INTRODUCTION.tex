@@ -1,0 +1,123 @@
+%introduction
+With the development of information technology (e.g., GIS), as well as increasing popularity of services such as Google Earth and Baidu Lvyou, large volumes of spatial data (e.g., tourist attractions, hotels and restaurants) are becoming available. Recently, increasing focus is being given to geo-textual information in response to users' queries, which promotes the efforts on spatial keyword queries \cite{cong2012efficient, de2008keyword, wu2012joint, zhang2009keyword}. By taking both of the locations and textual descriptions of content into consideration, spatial keyword queries offer greater flexibility to its users when looking for interesting objects.
+
+
+
+A range of proposals have been published that aim to return relevant geo-textual objects in response to the user's personal preference. Such proposals could be classified into two categories according to result granularity: some return individual object \cite{cong2009efficient, de2008keyword, cong2012efficient, shang2012user}, while others return a group of objects \cite{zhang2009keyword, zhang2010locating, cao2011collective, long2013collective, deng2015best}. In the first category, given a location and a set of keywords as arguments and returns the single spatial object that best matches these arguments. In a wide spectrum of applications, however, the users' needs (expressed by keywords) cannot be satisfied with only one single object. In the second category, mCK \cite{zhang2009keyword, zhang2010locating}, CoSKQ \cite{cao2011collective, long2013collective} and BKC \cite{deng2015best} retrieve a group of objects to satisfy users' needs collectively. However, few studies take into account the level information of keyword (e.g., the level of attraction, hotel and personal ability), which is crucial for users to make decisions.
+\begin{table}
+\centering
+\begin{tabular}{|l|l|l|l|}
+%\caption{$MergeList$}
+\hline
+OID & $PX$ & $PY$ & $Associated \quad keywords$ \\
+%OID & Position_x & Position_y & Associated keywords \\
+\hline \hline
+$o_1$ & 159.0 & 246.0 & mountain 4,landscape 1,temple 5 \\
+\hline
+$o_2$ & 171.0 & 36.0 & shore 2,museum 1 \\
+\hline
+$o_3$ & 109.5 & 235.5 & forest 4,mountain 1,temple 2 \\
+\hline
+$o_4$ & 352.5 & 271.5 & shore 1 \\
+\hline
+$o_5$ & 97.5 & 276.0 & driftage 1,shore 5,architecture 1 \\
+\hline
+$o_6$ & 331.5 & 70.5 & architecture 5,temple 2 \\
+\hline
+$o_7$ & 259.5 & 177.0 & museum 3,mountain 1,landscape 4 \\
+\hline
+$o_8$ & 130.5 & 3.0 & glacier 1 \\
+\hline
+$o_9$ & 148.5 & 291.0 & forest 4 \\
+\hline
+$o_{10}$ & 204.0 & 58.5 & driftage 3,mountain 1,glacier 1 \\
+\hline
+\end{tabular}
+\caption{Spatial objects database}\label{T1}
+\end{table}
+
+For example, Table \ref{T1} presents a spatial objects database. Each keyword associates with an integer value, representing the corresponding level of attraction. In this situation, we assume that the larger the level the better the attraction. For users who prefer famous mountain may choose $o_1$, however, others may prefer to choose $o_3$, $o_7$ or $o_{10}$ in light of the cost concerns or just for taking exercise. In such scenarios, users prefer to obtain objects that best match the personal preferences with level information of keyword, instead of retrieving objects only to cover the query keywords. To address this problem, we introduce the notion of \textbf{weight vector} to capture the weight users assign for each level to denote the preference. Without loss of generality, we hypothesize that the sum of each dimension of weight vector equals to 1. We aim at retrieving a group G of objects with minimum cost, and for each query keyword, the weight sum not less than a given threshold. By adjusting the threshold, users can control the size of result set flexibly and obtain the different succedaneous choices as the supplement. In addition, this query can also be used to find a consortium of partners that offer the required capabilities for a given project collectively. To accomplish a project, various kinds of capabilities are required, such as coding, information retrieval, text editing etc. Each partner with part of these capabilities, and we can measure the level of corresponding ability with an integer value. With the weight vector to capture the completion ratio for partners with different levels in a limited lifespan. In this situation, the leader may want to retrieve a consortium of partners, so that for each subtask e.g., coding, the total completion ratio not less than a threshold within a limited lifespan.
+
+In our work, we enhance existing works from three aspects. First, in addition to geo-textual information considered by existing works, we also take into account level information of keyword, which is crucial for users to make decisions. Second, we introduce weight vector to capture the users' preferences, which offers greater flexibility to its users when looking for interesting objects. Third, different from existing CoSKQ search which takes the maximum sum cost, we consider the cost distance in \cite{chen2014efficient} as our measurement. We believe this measurement is more realistic by considering both the cost of object and Euclidean distance between object o and query q. In view of this, we propose a new type of queries, namely, keyword-aware group weight coverage (KaGWC) query, which returns a group G of objects to meet users' needs collectively. Given these significant differences, the solution of KaGWC query can be very different from that of CoSKQ query.
+
+Specifically, given a set of spatial objects O, and a query $q=(\ell,\theta,W,\omega)$, where $\ell$ is a spatial location and $\theta$ is a weight constraint threshold. W is a weight vector. $\omega$ represents the query keywords. KaGWC query retrieves a group G of objects that meet the following two conditions simultaneously:
+\begin{itemize}
+    \item For each query keyword $\lambda$, the weight sum of G to $\lambda$ is not less than $\theta$;
+    \item The cost distance of G is minimized.
+\end{itemize}
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+\multicolumn{4}{|c|} {An example of KaGWC query} \\
+\hline
+$q.\ell$ & $q.\theta$ & $q.W$ & $q.\omega$ \\
+\hline
+(31.5,50.0) & 0.4 & (0.1,0.3,0.2,0.3,0.1) & mountain, temple \\
+\hline
+\end{tabular}
+
+\begin{tabular}{|c|l|c|c|}
+
+%\caption{$MergeList$}
+\hline
+
+SID & Solutions & Coverage Weight & Cost Distance\\
+%OID & Position_x & Position_y & Associated keywords \\
+\hline
+$S_1$ & $o_1,o_3$ & 0.4, 0.4 & 3746.83 \\
+\hline
+$S_2$ & $o_1,o_3,o_6$ & 0.4, 0.7 & 5851.73 \\
+\hline
+$S_3$ & $o_1,o_3,o_7$ & 0.5, 0.4 & 5834.71 \\
+\hline
+$S_4$ & $o_1,o_3,o_{10}$ & 0.5, 0.4 & 4610.38 \\
+\hline
+$S_5$ & $o_1,o_6,o_7$ & 0.4, 0.4 & 6530.98 \\
+\hline
+$S_6$ & $o_1,o_6,o_{10}$ & 0.4, 0.4 & 5306.65 \\
+\hline
+$S_7$ & $o_1,o_3,o_6,o_7$ & 0.5, 0.7 & 7939.61 \\
+\hline
+$S_8$ & $o_1,o_3,o_6,o_{10}$ & 0.5, 0.7 & 6715.28 \\
+\hline
+$S_9$ & $o_1,o_3,o_7,o_{10}$ & 0.6, 0.4 & 6698.26 \\
+\hline
+$S_{10}$ & $o_1,o_6,o_7,o_{10}$ & 0.5, 0.4 & 7394.53 \\
+\hline
+$S_{11}$ & $o_1,o_3,o_6,o_7,o_{10}$ & 0.6, 0.7 & 8803.15 \\
+\hline
+\end{tabular}
+\caption{An example of KaGWC query}\label{T2}
+\end{table}
+\textbf{Example 1}: We illustrate an example of KaGWC query at the top of Table \ref{T2} with the objects presented in Table \ref{T1}. We obtain all the feasible solutions (e.g., $S_1$ to $S_{11}$). Though all these solutions satisfy the weight constraint, we take $S_1$, the one with the minimum cost distance, as our optimal solution.
+
+In this work, we map the classic WSC problem to KaGWC query, which denotes that KaGWC query is NP-hard. Due to the intrinsical challenges of answering KaGWC query, we design two efficient approximation algorithms, namely CubeTree and MaxMargin with provable approximation ratio. Considering the scale of query keywords is limited, we also devise the exact algorithm MergeList in our work. All three algorithms are supported by inverted indexing the objects with keywords. CubeTree obtains the solution by taking the divide and conquer strategy in a bottom-up manner. Though this algorithm runs faster than other two algorithms, the performance is unstable in terms of approximation ratio. To overcome this critical drawback, we develop another approximation algorithm MaxMargin, which takes a greedy strategy. MaxMargin picks the current optimal object in each iteration until weight constraint is satisfied. MaxMargin runs slightly slowly than CubeTree, however, MaxMargin achieves better performance than CubeTree in terms of accuracy and stability of approximation ratio. Besides, we also devise the exact algorithm MergeList with two pruning strategies.
+
+To summarize, we make the following contributions.
+\begin{itemize}
+    \item We propose a novel type of queries, called KaGWC queries, retrieving a group of objects that cover the query keywords not less than a given threshold by taking into account the level information. We prove this problem is NP-hard. To the best of our knowledge, this is the first work to address this problem.
+    \item We design two efficient and effective approximation algorithms based on the KHT index. Besides, we also propose an exact algorithm for this problem.
+    \item We conduct comprehensive experiments to demonstrate the efficiency and effectiveness of our proposed algorithms.
+\end{itemize}
+
+The rest of this paper is organized as follows. Section 2 formally defines the problem and proves the NP-hard complexity of it. Section 3 discusses existing work. We present the index structure KHT and our proposed algorithms in Sections 4 and 5 respectively. Section 6 gives the empirical study and Section 7 concludes the paper.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,90 @@
+%problem statement
+In this section, we first introduce the fundamental notions used in this paper. Then we will prove the NP-hard complexity of our problem. Notations used in this paper is summarized in Table \ref{T3}.
+
+Let $O$ denotes a database containing n spatial objects. Each object $o\in O$ is associated with a location $o.\ell$, a set of keywords $o.\omega$ to capture the tourist attractions or hotels etc. and a $|q.\omega|$ dimensions vector $o.\nu$ with the $i$th element being the level information of $i$th keywords in $|o.\omega|$. For an object $o\in O$, we  refer to the cost of o as cost(o). For ease of presentation, we take the level vector as a multidimensional positive integer vector. And the upper bound of integer value is fixed (e.g., for attraction not larger than 5, that is to say only has 5 levels for attraction).
+
+%symbol table and a |q.w| dimensions vector o.v with the ith element being the auxiliary information of ith keywords in o.w.
+\begin{table}
+\centering
+\begin{tabular}{|c|l|}
+%\caption{$MergeList$}
+\hline
+Notations & Explanations \\
+%OID & Position_x & Position_y & Associated keywords \\
+\hline
+$q$ & The KaGWC query of form:$(\ell,\theta,W,\omega)$\\
+\hline
+$RO_q$ & The relevant objects to query q\\
+\hline
+$RO_\lambda$ & The relevant objects to keyword $\lambda$\\
+\hline
+$cost(o)$ & The cost of o \\
+\hline
+$cd(o,q)$ & The cost distance of o to query q\\
+\hline
+$cw(o,\lambda)$ & The coverage weight of $\lambda$ covered by o\\
+\hline
+$cov(G,q)$ & The coverage weight of q covered by G \\
+\hline
+$cr(o,q)$ & The contribution ratio of o to q\\
+\hline
+$Cube_\kappa$ & The cube of keywords set $\kappa$\\
+\hline
+$dcr_q^r(o)$ & The dynamic contribution ratio of o to q in iteration r\\
+\hline
+\end{tabular}
+\caption{Summary of the notations used.} \label{T3}
+\end{table}
+
+\noindent
+\begin{definition}
+    \textbf{(Cost Distance).} Given a query q and an object $o\in O$, the cost distance of $o$ can be denoted as:
+    \begin{equation}
+        cd(o,q)=cost(o) \cdot dist(o,q)
+    \end{equation}
+\end{definition}
+
+In Equation(1), dist(o,q) refers to the Euclidean distance between o and q. Comparing with the cost function used in \cite{cao2011collective, long2013collective}, cost distance is more adaptive to real application scenarios in that, it not only take the distance between query point q and o but also the internal cost of o into consideration.
+
+\noindent
+\begin{definition}
+    \textbf{(Object coverage weight).} Given a keyword $\lambda$, a multidimensional weight vector W and an object $o\in O$. We use the notation $o.\nu_\lambda$ to denotes the corresponding level value of keyword $\lambda$ in $o.\nu$. Then the weight that $\lambda$ covered by $o$ can be represented as:
+    \begin{equation}
+        cw(o,\lambda)=W[o.\nu_\lambda]
+    \end{equation}
+\end{definition}
+
+Differing with CoSKQ in which a keyword either covered by object o or not, in this work we take the coverage weight \textit{cw} as our measurement. Note that if $\lambda$ is not contained by $o.\omega$, we set $cw(o,\lambda)=0$. We use $cov(o,q)=\sum_{\lambda \in q.\omega}cw(o,\lambda)$ and $cov(G,\lambda)=\sum_{o \in G}cw(o,\lambda)$ to denote the weight that q is covered by o and the weight that $\lambda$ is covered by G, respectively.
+
+\noindent
+\begin{definition}
+    \textbf{(Contribution ratio).} Given a query q and an object o, we define the contribution ratio of the object o to q as follows:
+    \begin{equation}
+        cr(o,q)=\frac{cov(o,q)}{cd(o,q)}
+    \end{equation}
+\end{definition}
+
+By taking both of the coverage weight and the cost distance into consideration, $cr(o,q)$ can fit in with the real application scenarios better than only use $cov(o,q)$ to evaluate the contribution of o to q.
+
+\noindent
+\begin{definition}
+    \textbf{(KaGWC queries).} The KaGWC queries $q=(\ell,\theta,W,\omega)$, where $\ell$ is a spatial location and $\theta$ is a threshold. W is a vector model to capture level information and $\omega$ represents the query keywords. KaGWC queries aim at retrieving a group G of objects that collectively satisfy the following two conditions:
+    \begin{itemize}
+        \item For each keyword $\lambda \in q.\omega$, $cov(G,\lambda)\geq q.\theta$;
+        \item $\underaccent{G}{\arg} \min\sum_{o \in G}cd(o,q)$.
+    \end{itemize}
+\end{definition} \label{D4}
+
+Given a KaGWC queries q, we claim an object o is \textit{\textbf{relevant}} to q if o contains at least one keyword $\lambda \in q.\omega$. We use notation \textbf{$RO_\lambda$} and \textbf{$RO_q$} to denote the set of objects that relevant to $\lambda$ and query q in $O$, respectively. It is sufficient to take only $RO_q$ instead of O into consideration for a specific query q. If a group G of objects can satisfy the weight constraint of definition 4, we say that G is a \textit{\textbf{feasible solution}} of query q. Put differently, KaGWC queries return the feasible solution with minimum cost.
+
+\noindent
+\begin{thm}
+    The KaGWC query is NP-hard.
+    \begin{pot}
+        We can reduce the classic WSC Problem to the KaGWC problem. A typical instance of the WSC problem of the form $<U,S>$, where  $U=\{1,2,3,...,n\}$ of n elements and a family of sets $S=\{S_1,S_2,S_3,...,S_m\}$, where $S_i \subseteq U$ and each $S_i$ is associated with a positive cost $C_{S_i}$. The decision problem is to decide if we can find a subset $F$ of $S$ such that $\cup_{S_i \in F}S_i=U$ and such that its cost $\sum_{S_i \in F}C_{S_i}$ is minimized.
+
+        To reduce the WSC problem to KaGWC queries q. We map each element of $U$ corresponding to a query keyword, that each set $S_i$ corresponding to a spatial object $o_i$, and each positive cost $C_{S_i}$ as the $cd(o_i,q)$. For each keyword associated with $o_i$, we set the level value to 1. Besides, we hypothesize the weight vector $W=\{1,0,0,0,0\}$ and the threshold is 1. Clearly, there is a solution to weighted set cover problem if and only if there is solution to query q.
+    \end{pot}
+\end{thm}
+
+

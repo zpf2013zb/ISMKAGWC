@@ -1,0 +1,157 @@
+\begin{thebibliography}{10}
+
+\bibitem{cao2013kors}
+X.~Cao, L.~Chen, G.~Cong, J.~Guan, N.-T. Phan, and X.~Xiao.
+\newblock Kors: Keyword-aware optimal route search system.
+\newblock In {\em 2013 IEEE 29th International Conference on Data Engineering
+  (ICDE)}, pages 1340--1343. IEEE, 2013.
+
+\bibitem{cao2012keyword}
+X.~Cao, L.~Chen, G.~Cong, and X.~Xiao.
+\newblock Keyword-aware optimal route search.
+\newblock {\em Proceedings of the VLDB Endowment}, 5(11):1136--1147, 2012.
+
+\bibitem{cao2011collective}
+X.~Cao, G.~Cong, C.~S. Jensen, and B.~C. Ooi.
+\newblock Collective spatial keyword querying.
+\newblock In {\em Proceedings of the 2011 ACM SIGMOD International Conference
+  on Management of data}, pages 373--384. ACM, 2011.
+
+\bibitem{cary2010efficient}
+A.~Cary, O.~Wolfson, and N.~Rishe.
+\newblock Efficient and scalable method for processing top-k spatial boolean
+  queries.
+\newblock In {\em Scientific and Statistical Database Management}, pages
+  87--95. Springer, 2010.
+
+\bibitem{chen2014efficient}
+Z.~Chen, Y.~Liu, R.~C.-W. Wong, J.~Xiong, G.~Mai, and C.~Long.
+\newblock Efficient algorithms for optimal location queries in road networks.
+\newblock In {\em Proceedings of the 2014 ACM SIGMOD international conference
+  on Management of data}, pages 123--134. ACM, 2014.
+
+\bibitem{chvatal1979greedy}
+V.~Chvatal.
+\newblock A greedy heuristic for the set-covering problem.
+\newblock {\em Mathematics of operations research}, 4(3):233--235, 1979.
+
+\bibitem{cong2009efficient}
+G.~Cong, C.~S. Jensen, and D.~Wu.
+\newblock Efficient retrieval of the top-k most relevant spatial web objects.
+\newblock {\em Proceedings of the VLDB Endowment}, 2(1):337--348, 2009.
+
+\bibitem{cong2012efficient}
+G.~Cong, H.~Lu, B.~C. Ooi, D.~Zhang, and M.~Zhang.
+\newblock Efficient spatial keyword search in trajectory databases.
+\newblock {\em arXiv preprint arXiv:1205.2880}, 2012.
+
+\bibitem{cormen2001introduction}
+T.~H. Cormen, C.~E. Leiserson, R.~L. Rivest, C.~Stein, et~al.
+\newblock {\em Introduction to algorithms}, volume~2.
+\newblock MIT press Cambridge, 2001.
+
+\bibitem{de2008keyword}
+I.~De~Felipe, V.~Hristidis, and N.~Rishe.
+\newblock Keyword search on spatial databases.
+\newblock In {\em IEEE 24th International Conference on Data Engineering, 2008.
+  (ICDE)}, pages 656--665. IEEE, 2008.
+
+\bibitem{deng2015best}
+K.~Deng, X.~Li, J.~Lu, and X.~Zhou.
+\newblock Best keyword cover search.
+\newblock {\em IEEE Transactions on Knowledge and Data Engineering (TKDE)},
+  2015.
+
+\bibitem{gaoefficient}
+Y.~Gao, X.~Qin, B.~Zheng, and G.~Chen.
+\newblock Efficient reverse top-k boolean spatial keyword queries on road
+  networks.
+\newblock {\em IEEE Transactions on Knowledge and Data Engineering (TKDE)},
+  2014.
+
+\bibitem{li2005trip}
+F.~Li, D.~Cheng, M.~Hadjieleftheriou, G.~Kollios, and S.-H. Teng.
+\newblock On trip planning queries in spatial databases.
+\newblock In {\em Advances in Spatial and Temporal Databases}, pages 273--290.
+  Springer, 2005.
+
+\bibitem{li2011ir}
+Z.~Li, K.~C. Lee, B.~Zheng, W.-C. Lee, D.~L. Lee, and X.~Wang.
+\newblock Ir-tree: An efficient index for geographic document search.
+\newblock {\em IEEE Transactions on Knowledge and Data Engineering (TKDE)},
+  23(4):585--599, 2011.
+
+\bibitem{long2013collective}
+C.~Long, R.~C.-W. Wong, K.~Wang, and A.~W.-C. Fu.
+\newblock Collective spatial keyword queries: a distance owner-driven approach.
+\newblock In {\em Proceedings of the 2013 ACM SIGMOD International conference
+  on Management of data}, pages 689--700. ACM, 2013.
+
+\bibitem{lu2011reverse}
+J.~Lu, Y.~Lu, and G.~Cong.
+\newblock Reverse spatial and textual k nearest neighbor search.
+\newblock In {\em Proceedings of the 2011 ACM SIGMOD International Conference
+  on Management of data}, pages 349--360. ACM, 2011.
+
+\bibitem{rocha2011efficient}
+J.~B. Rocha-Junior, O.~Gkorgkas, S.~Jonassen, and K.~N{\o}rv{\aa}g.
+\newblock Efficient processing of top-k spatial keyword queries.
+\newblock In {\em Advances in Spatial and Temporal Databases}, pages 205--222.
+  Springer, 2011.
+
+\bibitem{rocha2012top}
+J.~B. Rocha-Junior and K.~N{\o}rv{\aa}g.
+\newblock Top-k spatial keyword queries on road networks.
+\newblock In {\em Proceedings of the 15th international conference on extending
+  database technology (EDBT}, pages 168--179. ACM, 2012.
+
+\bibitem{shang2012user}
+S.~Shang, R.~Ding, B.~Yuan, K.~Xie, K.~Zheng, and P.~Kalnis.
+\newblock User oriented trajectory search for trip recommendation.
+\newblock In {\em Proceedings of the 15th International Conference on Extending
+  Database Technology (EDBT)}, pages 156--167. ACM, 2012.
+
+\bibitem{tao2014fast}
+Y.~Tao and C.~Sheng.
+\newblock Fast nearest neighbor search with keywords.
+\newblock {\em IEEE Transactions on Knowledge and Data Engineering (TKDE)},
+  26(4):878--888, 2014.
+
+\bibitem{wu2012joint}
+D.~Wu, M.~L. Yiu, G.~Cong, and C.~S. Jensen.
+\newblock Joint top-k spatial keyword query processing.
+\newblock {\em IEEE Transactions on Knowledge and Data Engineering (TKDE)},
+  24(10):1889--1903, 2012.
+
+\bibitem{wu2011efficient}
+D.~Wu, M.~L. Yiu, C.~S. Jensen, and G.~Cong.
+\newblock Efficient continuously moving top-k spatial keyword query processing.
+\newblock In {\em 2011 IEEE 27th International Conference on Data Engineering
+  (ICDE)}, pages 541--552. IEEE, 2011.
+
+\bibitem{yao2011multi}
+B.~Yao, M.~Tang, and F.~Li.
+\newblock Multi-approximate-keyword routing in gis data.
+\newblock In {\em Proceedings of the 19th ACM SIGSPATIAL International
+  Conference on Advances in Geographic Information Systems}, pages 201--210.
+  ACM, 2011.
+
+\bibitem{zhang2009keyword}
+D.~Zhang, Y.~M. Chee, A.~Mondal, A.~Tung, and M.~Kitsuregawa.
+\newblock Keyword search in spatial databases: Towards searching by document.
+\newblock In {\em IEEE 25th International Conference on Data Engineering, 2009.
+  ICDE'09.}, pages 688--699. IEEE, 2009.
+
+\bibitem{zhang2010locating}
+D.~Zhang, B.~C. Ooi, and A.~Tung.
+\newblock Locating mapped resources in web 2.0.
+\newblock In {\em 2010 IEEE 26th International Conference on Data Engineering
+  (ICDE)}, pages 521--532. IEEE, 2010.
+
+\bibitem{zhang2013scalable}
+D.~Zhang, K.-L. Tan, and A.~K. Tung.
+\newblock Scalable top-k spatial keyword search.
+\newblock In {\em Proceedings of the 16th International Conference on Extending
+  Database Technology (EDBT)}, pages 359--370. ACM, 2013.
+
+\end{thebibliography}
